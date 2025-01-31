@@ -1,23 +1,24 @@
-{ lib
-, stdenv
-, buildDotnetModule
-, dotnetCorePackages
-, fetchFromGitHub
-, gtk3
-, gdk-pixbuf
-, glib
-, sane-backends
-, libnotify
+{
+  lib,
+  stdenv,
+  buildDotnetModule,
+  dotnetCorePackages,
+  fetchFromGitHub,
+  wrapGAppsHook3,
+  gtk3,
+  gdk-pixbuf,
+  glib,
+  sane-backends,
+  libnotify,
 }:
-
-buildDotnetModule rec {
+buildDotnetModule (finalAttrs: {
   pname = "naps2";
-  version = "7.4.3";
+  version = "7.5.3";
 
   src = fetchFromGitHub {
     owner = "cyanfish";
     repo = "naps2";
-    rev = "v${version}";
+    rev = "v${finalAttrs.version}";
     hash = "sha256-/qSfxGHcCSoNp516LFYWgEL4csf8EKgtSffBt1C02uE=";
   };
 
@@ -26,20 +27,8 @@ buildDotnetModule rec {
 
   executables = [ "naps2" ];
 
-  dotnet-sdk =
-    with dotnetCorePackages;
-    sdk_8_0
-    // {
-      inherit
-        (combinePackages [
-          sdk_8_0
-          sdk_6_0-bin
-        ])
-        packages
-        targetPackages
-        ;
-    };
-  dotnet-runtime = dotnetCorePackages.runtime_8_0;
+  nativeBuildInputs = [ wrapGAppsHook3 ];
+
   selfContainedBuild = true;
   runtimeDeps = [
     gtk3
@@ -67,7 +56,6 @@ buildDotnetModule rec {
     maintainers = with lib.maintainers; [ eliandoran ];
     platforms = lib.platforms.linux;
     mainProgram = "naps2";
-    broken = stdenv.hostPlatform.isAarch64;  # Google.Protobuf.Tools dependency fails to build.
+    broken = stdenv.hostPlatform.isAarch64; # Google.Protobuf.Tools dependency fails to build.
   };
-
-}
+})
