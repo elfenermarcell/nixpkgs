@@ -415,6 +415,11 @@ lib.mapAttrs mkLicense (
       fullName = "Common Development and Distribution License 1.0";
     };
 
+    cddl11 = {
+      spdxId = "CDDL-1.1";
+      fullName = "Common Development and Distribution License 1.1";
+    };
+
     cecill20 = {
       spdxId = "CECILL-2.0";
       fullName = "CeCILL Free Software License Agreement v2.0";
